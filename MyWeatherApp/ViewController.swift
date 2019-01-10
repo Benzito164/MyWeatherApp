@@ -12,10 +12,19 @@ class ViewController: UIViewController {
 
     let cellId = "cellId"
     let headerId = "headerId"
+    
+    let weatherButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("Weather", for: .normal)
+        button.backgroundColor = .red
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
-    }
+        view.backgroundColor = .white
+        view.addSubview(weatherButton)
+        weatherButton.setPositionOnView(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 50)    }
     
 //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
 //        return UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
