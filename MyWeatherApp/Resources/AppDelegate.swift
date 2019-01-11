@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         window = UIWindow(frame: UIScreen.main.bounds)
         let flowLayout = UICollectionViewFlowLayout()
-        let collectionView = ViewController(collectionViewLayout: flowLayout)
+        let collectionView = CollectionViewController(collectionViewLayout: flowLayout)
         window?.rootViewController = collectionView
         window?.makeKeyAndVisible()
         return true

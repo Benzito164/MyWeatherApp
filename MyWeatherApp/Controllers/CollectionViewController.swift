@@ -8,17 +8,25 @@
 
 import UIKit
 
-class ViewController: UICollectionViewController {
+class CollectionViewController: UICollectionViewController,UICollectionViewDelegateFlowLayout {
 
     let cellId = "cellId"
     let headerId = "headerId"
+    var savedLocation = [CustomCollectionViewCell]()
+    var selectedLocation: CustomCollectionViewCell?
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
     collectionView.backgroundColor  = .white
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView.register(UICollectionViewCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
+    collectionView.register(CustomCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+    collectionView.register(CustomCollectionViewHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
+    }
+    
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectedLocation = savedLocation[indexPath.item]
+        collectionView.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -30,7 +38,10 @@ class ViewController: UICollectionViewController {
         return CGSize(width: width , height: width)
     }
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableCell(withReuseIdentifier: headerId, for: indexPath)
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! CustomCollectionViewHeader
+        header.locationLabel.text = selectedLocation?.locationLabel.text
+        header.temperatureLabel.text = selectedLocation?.temperatureLabel.text
+        header.weatherSymbol.image = selectedLocation?.weatherSymbol.image
         return header
     }
 
@@ -51,8 +62,8 @@ class ViewController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
-        cell.backgroundColor = .black
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! CustomCollectionViewCell
+        savedLocation.append(cell)
         return cell
     }
     override var prefersStatusBarHidden: Bool{

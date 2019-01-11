@@ -7,22 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B1308D4A21E8AEEA009437F9 /* CustomCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1308D4921E8AEEA009437F9 /* CustomCollectionViewCell.swift */; };
+		B1308D5221E8CED5009437F9 /* CustomCollectionViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1308D5121E8CED5009437F9 /* CustomCollectionViewHeader.swift */; };
 		B19FB71421E78FC1009C643A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19FB71321E78FC1009C643A /* AppDelegate.swift */; };
-		B19FB71621E78FC1009C643A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19FB71521E78FC1009C643A /* ViewController.swift */; };
+		B19FB71621E78FC1009C643A /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19FB71521E78FC1009C643A /* CollectionViewController.swift */; };
 		B19FB71B21E78FC2009C643A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B19FB71A21E78FC2009C643A /* Assets.xcassets */; };
 		B19FB71E21E78FC2009C643A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B19FB71C21E78FC2009C643A /* LaunchScreen.storyboard */; };
-		B19FB72621E79528009C643A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B19FB72521E79528009C643A /* Main.storyboard */; };
 		B19FB72921E7A78C009C643A /* SwiftExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19FB72821E7A78C009C643A /* SwiftExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B1308D4921E8AEEA009437F9 /* CustomCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewCell.swift; sourceTree = "<group>"; };
+		B1308D5121E8CED5009437F9 /* CustomCollectionViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewHeader.swift; sourceTree = "<group>"; };
 		B19FB71021E78FC1009C643A /* MyWeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyWeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B19FB71321E78FC1009C643A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B19FB71521E78FC1009C643A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B19FB71521E78FC1009C643A /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		B19FB71A21E78FC2009C643A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B19FB71D21E78FC2009C643A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B19FB71F21E78FC2009C643A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B19FB72521E79528009C643A /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = ../../../../.Trash/Main.storyboard; sourceTree = "<group>"; };
 		B19FB72821E7A78C009C643A /* SwiftExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -37,6 +39,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B1308D4821E8AEC2009437F9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B1308D4921E8AEEA009437F9 /* CustomCollectionViewCell.swift */,
+				B1308D5121E8CED5009437F9 /* CustomCollectionViewHeader.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		B1308D4B21E8BC81009437F9 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B19FB71521E78FC1009C643A /* CollectionViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		B1308D4C21E8C535009437F9 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B19FB71321E78FC1009C643A /* AppDelegate.swift */,
+				B19FB71C21E78FC2009C643A /* LaunchScreen.storyboard */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		B19FB70721E78FC1009C643A = {
 			isa = PBXGroup;
 			children = (
@@ -56,13 +84,12 @@
 		B19FB71221E78FC1009C643A /* MyWeatherApp */ = {
 			isa = PBXGroup;
 			children = (
-				B19FB72721E7A730009C643A /* Extensions */,
-				B19FB72521E79528009C643A /* Main.storyboard */,
-				B19FB71321E78FC1009C643A /* AppDelegate.swift */,
-				B19FB71521E78FC1009C643A /* ViewController.swift */,
-				B19FB71A21E78FC2009C643A /* Assets.xcassets */,
-				B19FB71C21E78FC2009C643A /* LaunchScreen.storyboard */,
 				B19FB71F21E78FC2009C643A /* Info.plist */,
+				B1308D4C21E8C535009437F9 /* Resources */,
+				B1308D4B21E8BC81009437F9 /* Controllers */,
+				B1308D4821E8AEC2009437F9 /* Models */,
+				B19FB72721E7A730009C643A /* Extensions */,
+				B19FB71A21E78FC2009C643A /* Assets.xcassets */,
 			);
 			path = MyWeatherApp;
 			sourceTree = "<group>";
@@ -133,7 +160,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B19FB72621E79528009C643A /* Main.storyboard in Resources */,
 				B19FB71E21E78FC2009C643A /* LaunchScreen.storyboard in Resources */,
 				B19FB71B21E78FC2009C643A /* Assets.xcassets in Resources */,
 			);
@@ -146,9 +172,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B19FB71621E78FC1009C643A /* ViewController.swift in Sources */,
+				B19FB71621E78FC1009C643A /* CollectionViewController.swift in Sources */,
 				B19FB71421E78FC1009C643A /* AppDelegate.swift in Sources */,
 				B19FB72921E7A78C009C643A /* SwiftExtensions.swift in Sources */,
+				B1308D4A21E8AEEA009437F9 /* CustomCollectionViewCell.swift in Sources */,
+				B1308D5221E8CED5009437F9 /* CustomCollectionViewHeader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
