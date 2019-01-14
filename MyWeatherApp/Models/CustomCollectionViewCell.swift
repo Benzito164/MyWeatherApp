@@ -23,21 +23,27 @@ class CustomCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    let weatherSymbol : UIImageView = {
+    var weatherSymbol : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "Cloudy")
+        image.image = UIImage(named:"Rain")
         image.contentMode = .scaleAspectFit
         image.clipsToBounds = true
         return image
     }()
     
+   init(weatherIcon:UIImageView,weather:String,weatherLocation:String,temperature:String) {
+        super.init(frame:UIScreen.main.bounds)
+      backgroundColor = .brown
+        weatherSymbol = weatherIcon
+        temperatureLabel.text = temperature+"°C"
+        locationLabel.text = weatherLocation
+        self.setUpViews()
+    }
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .brown
-        setUpViews()
+        self.setUpViews()
     }
-
-
     
     func setUpViews(){
       addSubview(temperatureLabel)
