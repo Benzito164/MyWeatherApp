@@ -35,7 +35,10 @@ extension UIView {
     
     }
     
-    func renderImageFrameCircular(){
-
+    func makeCircle(view: UIView){
+      view.layer.cornerRadius = self.frame.size.height / 2
+      view.layer.masksToBounds = true
+        view.clipsToBounds = true
+        view.backgroundColor = .cyan
     }
 }

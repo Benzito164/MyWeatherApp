@@ -8,7 +8,9 @@
 
 import Foundation
 
-struct Api {
+struct WeatherEndPoint {
     static let key = "11e8d41a7e77f4d31a06ef452a9de726"
+    static var iconUrl = "http://openweathermap.org/img/w/"
+    static var currentLocationWeatherUrl = "http://api.openweathermap.org/data/2.5/weather"
     
 }

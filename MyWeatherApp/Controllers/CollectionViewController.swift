@@ -8,22 +8,35 @@
 
 import UIKit
 import SDWebImage
+
 var savedLocation = [CustomCollectionViewCell]()
+
 class CollectionViewController: UICollectionViewController,UICollectionViewDelegateFlowLayout {
 
     let cellId = "cellId"
     let headerId = "headerId"
-    
     var selectedLocation: CustomCollectionViewCell?
+    
+    let searchButton : UIButton = {
+       let button = UIButton(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
+        button.setImage(UIImage(named: "search"), for: .normal)
+        return button
+    }()
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        collectionView.addSubview(searchButton)
+        searchButton.setPositionOnView(top: collectionView.topAnchor, left: collectionView.leftAnchor, bottom: collectionView.bottomAnchor, right: collectionView.rightAnchor, paddingTop: 600, leftPadding: 300, bottomPadding: 20, rightPadding: 20, width: 60, height: 60)
+        searchButton.makeCircle(view: searchButton)
         let locationManager = LocationManager()
         let locations = locationManager.locations
         let weatherInfo = WeatherDataManager()
-        weatherInfo.getWeatherForLocation(locationsArray:locations)
+        weatherInfo.getWeatherForLocation(locationsArray:locations, completionHandler: reloadCollectionView)
     collectionView.backgroundColor  = .white
     collectionView.register(CustomCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
     collectionView.register(CustomCollectionViewHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
+    reloadCollectionView()
     }
     
      public  func reloadCollectionView(){
@@ -44,13 +57,26 @@ class CollectionViewController: UICollectionViewController,UICollectionViewDeleg
     }
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! CustomCollectionViewHeader
+        if savedLocation.count == 1  {
+//            header.locationLabel.text = savedLocation[0].locationLabel.text
+//            header.temperatureLabel.text = savedLocation[0].temperatureLabel.text
+//            header.weatherSymbol.image = savedLocation[0].weatherSymbol.image
+            displayWeatherForHeader(header: header, location: savedLocation[0])
+        }
+        else if selectedLocation != nil {
+//            header.locationLabel.text = selectedLocation?.locationLabel.text
+//            header.temperatureLabel.text = selectedLocation?.temperatureLabel.text
+//            header.weatherSymbol.image = selectedLocation?.weatherSymbol.image
+            displayWeatherForHeader(header: header, location: (selectedLocation)!)
+        }
 
-                    header.locationLabel.text = selectedLocation?.locationLabel.text
-                    header.temperatureLabel.text = selectedLocation?.temperatureLabel.text
-                    header.weatherSymbol.image = selectedLocation?.weatherSymbol.image
         return header
     }
-
+    fileprivate func displayWeatherForHeader(header:CustomCollectionViewHeader,location: CustomCollectionViewCell){
+        header.locationLabel.text = location.locationLabel.text
+        header.temperatureLabel.text = location.temperatureLabel.text
+        header.weatherSymbol.image = location.weatherSymbol.image
+    }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
@@ -86,6 +112,7 @@ class CollectionViewController: UICollectionViewController,UICollectionViewDeleg
   
         return cell
     }
+    
     override var prefersStatusBarHidden: Bool{
         return true
     }

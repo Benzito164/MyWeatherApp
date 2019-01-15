@@ -15,14 +15,14 @@ import SDWebImage
 
 class WeatherDataManager  {
     
-    var url = "http://api.openweathermap.org/data/2.5/weather"
-    var iconUrl = "http://openweathermap.org/img/w/"
+   
     
-    func getWeatherForLocation(locationsArray : [String]){
+    
+    func getWeatherForLocation(locationsArray : [String],completionHandler: @escaping ()-> Void){
 
         locationsArray.forEach { (location) in
-            let params : [String: String] = ["q":location, "APPID":Api.key,"units":"metric"]
-            Alamofire.request(url, method: .get, parameters: params).responseJSON { (response) in
+            let params : [String: String] = ["q":location, "APPID":WeatherEndPoint.key,"units":"metric"]
+            Alamofire.request(WeatherEndPoint.currentLocationWeatherUrl, method: .get, parameters: params).responseJSON { (response) in
                 
                 let weatherData :JSON = JSON(response.result.value!)
                 let weatherIcon = self.getWeatherIcon(icon: weatherData["weather"][0]["icon"].stringValue)
@@ -31,10 +31,12 @@ class WeatherDataManager  {
                 let locationName = weatherData["name"].stringValue
                 let weatherTemperature = weatherData["main"]["temp"].stringValue
                 self.updateWeatherArrayWithData(weather: weather, weatherDescription: weatherDescription, weatherIcon: weatherIcon, locationName: locationName, temperature: weatherTemperature)
+                        DispatchQueue.main.async {
+                            completionHandler()
+                        }
             }
+    
         }
-
-
     }
     
     func updateWeatherArrayWithData(weather: String, weatherDescription: String, weatherIcon:UIImageView,locationName: String,temperature:String){
@@ -45,7 +47,7 @@ class WeatherDataManager  {
     
     fileprivate func getWeatherIcon(icon: String)-> UIImageView{
         let imageIcon = UIImageView()
-         let url = iconUrl+icon+".png"
+         let url = WeatherEndPoint.iconUrl+icon+".png"
           imageIcon.sd_setImage(with:URL(string:url), placeholderImage: UIImage(named: "placeholder.png"))
         return imageIcon
     }
