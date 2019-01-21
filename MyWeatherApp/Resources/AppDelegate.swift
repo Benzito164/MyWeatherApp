@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GooglePlaces
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -19,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let collectionView = CollectionViewController(collectionViewLayout: flowLayout)
         window?.rootViewController = collectionView
         window?.makeKeyAndVisible()
+        GMSPlacesClient.provideAPIKey("AIzaSyADe0-zxIyoQiWykms97OM-d6LB-f_4FVE")
         return true
     }
 

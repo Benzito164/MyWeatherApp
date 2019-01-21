@@ -41,7 +41,7 @@ class CustomCollectionViewCell: UICollectionViewCell {
     }
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .brown
+        backgroundColor = UIColor.brown
         self.setUpViews()
     }
     

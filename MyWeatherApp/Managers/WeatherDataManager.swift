@@ -14,10 +14,8 @@ import SDWebImage
 
 
 class WeatherDataManager  {
-    
-   
-    
-    
+    //MARK: - HELLO FOOL :) 
+    //TODO: - change the weatherTemperature to interger so that you can round up the value.
     func getWeatherForLocation(locationsArray : [String],completionHandler: @escaping ()-> Void){
 
         locationsArray.forEach { (location) in
@@ -42,7 +40,6 @@ class WeatherDataManager  {
     func updateWeatherArrayWithData(weather: String, weatherDescription: String, weatherIcon:UIImageView,locationName: String,temperature:String){
         let weatherInfo = CustomCollectionViewCell(weatherIcon: weatherIcon, weather: weather, weatherLocation: locationName, temperature: temperature)
         savedLocation.append(weatherInfo)
-
     }
     
     fileprivate func getWeatherIcon(icon: String)-> UIImageView{

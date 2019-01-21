@@ -9,17 +9,37 @@
 import Foundation
 class LocationManager {
     
+    //MARK: - Variables 
     let locations = ["London","Paris","Liverpool","Lagos"]
+    private var _locations = [String]()
     
-    func addLocationToLocationArray(location: String){
-        
+    var userlocations:[String]{
+        get {
+            return _locations
+        }
+    }
+    
+    //MARK: - Methods
+    func addLocation(location: String){
+        if !doesLocationExistInArray(location: location){
+             _locations.append(location)
+        }
+       
     }
     
     func deletelocationFromLocationArray(location: String){
-        
+        if doesLocationExistInArray(location: location){
+            _locations.removeAll { $0 == location
+            }
+        }
+
+    }
+    
+    func emptyLocationArray()  {
+        _locations.removeAll()
     }
     
     func doesLocationExistInArray(location : String) -> Bool {
-        return false
+        return _locations.contains(location)
     }
 }
