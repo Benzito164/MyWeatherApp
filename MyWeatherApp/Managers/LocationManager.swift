@@ -10,12 +10,19 @@ import Foundation
 class LocationManager {
     
     //MARK: - Variables 
-    let locations = ["London","Paris","Liverpool","Lagos"]
-    private var _locations = [String]()
+    private var _locations : [String] {
+        get{
+          return UserDefaults.standard.object(forKey: keyName) as? [String] ?? [String]()
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: keyName)
+        }
+    }
+    private let keyName = "LocationsArray"
     
     var userlocations:[String]{
         get {
-            return _locations
+            return  _locations
         }
     }
     
@@ -31,6 +38,7 @@ class LocationManager {
         if doesLocationExistInArray(location: location){
             _locations.removeAll { $0 == location
             }
+           saveUserDefaults()
         }
 
     }
@@ -41,5 +49,14 @@ class LocationManager {
     
     func doesLocationExistInArray(location : String) -> Bool {
         return _locations.contains(location)
+    }
+    
+    fileprivate func saveUserDefaults(){
+        UserDefaults.standard.set(_locations, forKey: keyName)
+    }
+    
+    fileprivate func getUserDefaults() -> [String]{
+     _locations =  UserDefaults.standard.object(forKey: keyName) as? [String] ?? [String]()
+        return _locations
     }
 }

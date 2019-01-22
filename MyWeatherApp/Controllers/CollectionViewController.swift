@@ -46,16 +46,14 @@ class CollectionViewController:UICollectionViewController,UICollectionViewDelega
         searchButton.makeCircle(view: searchButton)
         searchButton.backgroundColor = .clear
         let locationManager = LocationManager()
-        locationManager.addLocation(location: "Exeter")
-        locationManager.addLocation(location: "Manchester")
-      //let locations = locationManager.locations
         let weatherInfo = WeatherDataManager()
         weatherInfo.getWeatherForLocation(locationsArray:locationManager.userlocations, completionHandler: reloadCollectionView)
         collectionView.backgroundColor  = .gray
-    collectionView.register(CustomCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
-    collectionView.register(CustomCollectionViewHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
-    reloadCollectionView()
-        displaySearchScreen()
+        collectionView.register(CustomCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.register(CustomCollectionViewHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
+        reloadCollectionView()
+        setUpGestureRecogniser()
+
     }
     
     @objc func displaySearchScreen(){
@@ -63,7 +61,6 @@ class CollectionViewController:UICollectionViewController,UICollectionViewDelega
         let height = UIScreen.main.bounds.height
         searchBar.searchBarStyle = UISearchBar.Style.default
         searchBar.placeholder = "Location"
-        //searchBar.backgroundColor = .blue
         searchBar.sizeToFit()
         searchBar.isTranslucent = false
         searchBar.showsCancelButton = true
@@ -82,9 +79,10 @@ class CollectionViewController:UICollectionViewController,UICollectionViewDelega
         view.addSubview(tableView)
         collectionView.willRemoveSubview(searchBar)
         view.addSubview(searchBar)
-        tableView.setPositionOnView(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 90, leftPadding: 5, bottomPadding: -300, rightPadding: 5, width: 20, height: 100)
+        tableView.setPositionOnView(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 90, leftPadding: 5, bottomPadding: -290, rightPadding: 5, width: 20, height: 100)
         searchBar.setPositionOnView(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 37, leftPadding: 10, bottomPadding: 200, rightPadding: -15, width: 20, height: 50)
         view.backgroundColor = .gray
+        tableView.reloadData()
     }
     
         func placeAutocomplete(place: String) {
@@ -132,11 +130,16 @@ extension CollectionViewController{
         else if selectedLocation != nil {
             displayWeatherForHeader(header: header, location: (selectedLocation)!)
         }
-        
+        if savedLocation.count == 0 {
+            header.locationLabel.text = "Please Add a location"
+            header.weatherSymbol.image = UIImage()
+            header.temperatureLabel.text = ""
+        }
         return header
     }
     fileprivate func displayWeatherForHeader(header:CustomCollectionViewHeader,location: CustomCollectionViewCell){
         header.locationLabel.text = location.locationLabel.text
+        header.temperatureDescription.text = location.temperatureDescription.text
         header.temperatureLabel.text = location.temperatureLabel.text
         header.weatherSymbol.image = location.weatherSymbol.image
     }
@@ -153,9 +156,6 @@ extension CollectionViewController{
         return CGSize(width: width, height: width)
     }
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if savedLocation.count == 0 {
-            return 1
-        }
         return savedLocation.count
     }
     
@@ -171,25 +171,20 @@ extension CollectionViewController{
             cell.temperatureLabel.text = savedLocation[indexPath.item].temperatureLabel.text
             cell.weatherSymbol.image = savedLocation[indexPath.item].weatherSymbol.image
         }
+        cell.makeCircle(view: cell)
         return cell
     }
 }
 //MARK: - UI Search delegate Methods
 extension CollectionViewController : UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate {
-    
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-      //  searchActive = true;
-        print("line 155")
-    }
+
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         searchActive = false;
-        print("line 160")
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchActive = false;
-        print("line 165")
         filtered.removeAll()
         data.removeAll()
         searchBar.removeFromSuperview()
@@ -202,7 +197,6 @@ extension CollectionViewController : UISearchBarDelegate,UITableViewDataSource,U
         placeAutocomplete(place: searchBar.text!)
         tableView.reloadData()
         searchBar.isLoading = false
-        print("line 170")
         view.endEditing(true)
         
     }
@@ -221,12 +215,6 @@ extension CollectionViewController : UISearchBarDelegate,UITableViewDataSource,U
         if searchText.count >= 3{
         placeAutocomplete(place: searchText)
         }
-
-//        filtered = data.filter({ (text) -> Bool in
-//            let tmp: NSString = text as NSString
-//            let range = tmp.range(of:searchText, options: NSString.CompareOptions.caseInsensitive)
-//            return range.location != NSNotFound
-//        })
         if(filtered.count == 0){
             searchActive = false;
         } else {
@@ -236,11 +224,14 @@ extension CollectionViewController : UISearchBarDelegate,UITableViewDataSource,U
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var city = [String]()
-        city.append(filtered[indexPath.item])
+        var cityList = [String]()
+        let city = String(filtered[indexPath.item].dropLast(4))
+        cityList.append(city)
          view.endEditing(true)
+        let locationManager = LocationManager()
+        locationManager.addLocation(location: city)
         let weatherInfo = WeatherDataManager()
-        weatherInfo.getWeatherForLocation(locationsArray:city, completionHandler: reloadCollectionView)
+        weatherInfo.getWeatherForLocation(locationsArray:cityList, completionHandler: reloadCollectionView)
         searchBarCancelButtonClicked(searchBar)
     }
     
@@ -261,14 +252,39 @@ extension CollectionViewController : UISearchBarDelegate,UITableViewDataSource,U
         cell.backgroundColor = .gray
         if(searchActive){
             cell.textLabel?.text = filtered[indexPath.row]
-        } else {
-          //  filtered.append("")
-           // cell.textLabel?.text = filtered[indexPath.row];
         }
-        
         return cell;
     }
 }
 
-
+//MARK: - UI Gesture Recogniser Set up and Method.
+extension CollectionViewController : UIGestureRecognizerDelegate{
+    
+    public func setUpGestureRecogniser(){
+        let lpgr = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gestureReconizer:)))
+        lpgr.minimumPressDuration = 0.5
+        lpgr.delaysTouchesBegan = true
+        lpgr.delegate = self
+        self.collectionView.addGestureRecognizer(lpgr)
+    }
+    
+    @objc func handleLongPress(gestureReconizer: UILongPressGestureRecognizer) {
+        if gestureReconizer.state != UIGestureRecognizer.State.ended {
+            return
+        }
+        
+        let point = gestureReconizer.location(in: self.collectionView)
+        let indexPath = self.collectionView.indexPathForItem(at: point)
+        
+        if let index = indexPath {
+            let cell = self.collectionView.cellForItem(at: index) as! CustomCollectionViewCell
+            savedLocation.remove(at: (indexPath?.row)!)
+            let locationManager = LocationManager()
+            locationManager.deletelocationFromLocationArray(location: cell.locationLabel.text ?? "")
+            collectionView.reloadData()
+        } else {
+            print("Could not find index path")
+        }
+    }
+}
 

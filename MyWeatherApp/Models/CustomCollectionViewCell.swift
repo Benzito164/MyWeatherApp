@@ -13,30 +13,39 @@ class CustomCollectionViewCell: UICollectionViewCell {
     
     let locationLabel : UILabel = {
         let label = UILabel()
-        label.text = "Liverpool"
+        label.text = "Location"
+        label.lineBreakMode = NSLineBreakMode.byWordWrapping
+        label.numberOfLines = 0
         return label
     }()
     
     let temperatureLabel : UILabel = {
         let label = UILabel()
-        label.text = "23°C"
+        label.text = "Add a "
+        return label
+    }()
+    
+    var temperatureDescription : UILabel = {
+        let label = UILabel()
+        label.text = "Cloudy"
         return label
     }()
     
     var weatherSymbol : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named:"Rain")
+        image.image = UIImage()
         image.contentMode = .scaleAspectFit
         image.clipsToBounds = true
         return image
     }()
     
-   init(weatherIcon:UIImageView,weather:String,weatherLocation:String,temperature:String) {
+    init(weatherIcon:UIImageView,weather:String,weatherLocation:String,temperature:String,weatherDescription:String) {
         super.init(frame:UIScreen.main.bounds)
       backgroundColor = .brown
         weatherSymbol = weatherIcon
         temperatureLabel.text = temperature+"°C"
         locationLabel.text = weatherLocation
+        temperatureDescription.text = weatherDescription
         self.setUpViews()
     }
     override init(frame: CGRect) {
@@ -49,9 +58,9 @@ class CustomCollectionViewCell: UICollectionViewCell {
       addSubview(temperatureLabel)
       addSubview(locationLabel)
       addSubview(weatherSymbol)
-        locationLabel.setPositionOnView(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
-        temperatureLabel.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: locationLabel.bottomAnchor , right: rightAnchor, paddingTop: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 10, height: 10)
-        weatherSymbol.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil , right: nil, paddingTop: 0, leftPadding: -2, bottomPadding: 0, rightPadding: 0, width: 30, height: 30)
+        locationLabel.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 28, leftPadding: 5, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
+        temperatureLabel.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 26, leftPadding: 4, bottomPadding: 0, rightPadding: 0, width: 10, height: 15)
+        weatherSymbol.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil , right: nil, paddingTop: 0, leftPadding: 13, bottomPadding: 0, rightPadding: 0, width: 30, height: 30)
         
         
     }

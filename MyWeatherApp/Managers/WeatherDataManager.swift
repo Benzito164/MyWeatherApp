@@ -21,7 +21,7 @@ class WeatherDataManager  {
         locationsArray.forEach { (location) in
             let params : [String: String] = ["q":location, "APPID":WeatherEndPoint.key,"units":"metric"]
             Alamofire.request(WeatherEndPoint.currentLocationWeatherUrl, method: .get, parameters: params).responseJSON { (response) in
-                
+                print(response.result.value!)
                 let weatherData :JSON = JSON(response.result.value!)
                 let weatherIcon = self.getWeatherIcon(icon: weatherData["weather"][0]["icon"].stringValue)
                 let weatherDescription = weatherData["weather"][0]["description"].stringValue
@@ -38,8 +38,15 @@ class WeatherDataManager  {
     }
     
     func updateWeatherArrayWithData(weather: String, weatherDescription: String, weatherIcon:UIImageView,locationName: String,temperature:String){
-        let weatherInfo = CustomCollectionViewCell(weatherIcon: weatherIcon, weather: weather, weatherLocation: locationName, temperature: temperature)
-        savedLocation.append(weatherInfo)
+        let weatherInfo = CustomCollectionViewCell(weatherIcon: weatherIcon, weather: weather, weatherLocation: locationName, temperature: temperature,weatherDescription:weatherDescription)
+        if savedLocation.count > 0 {
+            for locations in savedLocation {
+                if locationName == locations.locationLabel.text{
+                    return
+                }
+            }
+        }
+       savedLocation.append(weatherInfo)
     }
     
     fileprivate func getWeatherIcon(icon: String)-> UIImageView{

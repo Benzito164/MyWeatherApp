@@ -13,13 +13,21 @@ class CustomCollectionViewHeader: UICollectionViewCell {
     
     var locationLabel : UILabel = {
         let label = UILabel()
-        label.text = "Anfield"
+        label.text = "Add a Location"
         return label
     }()
     
     var temperatureLabel : UILabel = {
         let label = UILabel()
-        label.text = "23°C"
+        label.text = ""
+        return label
+    }()
+    
+    var temperatureDescription : UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0 
         return label
     }()
     
@@ -42,9 +50,11 @@ class CustomCollectionViewHeader: UICollectionViewCell {
         addSubview(weatherSymbol)
         addSubview(temperatureLabel)
         addSubview(locationLabel)
-        weatherSymbol.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil , right: nil, paddingTop: 0, leftPadding: -2, bottomPadding: 0, rightPadding: 0, width: 45, height: 45)
-        locationLabel.setPositionOnView(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 100, height: 100)
-        temperatureLabel.setPositionOnView(top:topAnchor, left: leftAnchor, bottom: locationLabel.bottomAnchor , right: rightAnchor, paddingTop: 0, leftPadding: 0, bottomPadding: 0, rightPadding: 0, width: 100, height: 100)
+        addSubview(temperatureDescription)
+        weatherSymbol.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil , right: nil, paddingTop: 0, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 45, height: 45)
+        temperatureDescription.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil , right: nil, paddingTop: 30, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 190, height: 45)
+        locationLabel.setPositionOnView(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 100, height: 100)
+        temperatureLabel.setPositionOnView(top:topAnchor, left: leftAnchor, bottom: locationLabel.bottomAnchor , right: rightAnchor, paddingTop: 0, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 100, height: 100)
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
