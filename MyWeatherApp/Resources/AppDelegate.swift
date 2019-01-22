@@ -7,15 +7,20 @@
 //
 
 import UIKit
+import GooglePlaces
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        window = UIWindow(frame: UIScreen.main.bounds)
+        let flowLayout = UICollectionViewFlowLayout()
+        let collectionView = CollectionViewController(collectionViewLayout: flowLayout)
+        window?.rootViewController = collectionView
+        window?.makeKeyAndVisible()
+        GMSPlacesClient.provideAPIKey("AIzaSyADe0-zxIyoQiWykms97OM-d6LB-f_4FVE")
         return true
     }
 
