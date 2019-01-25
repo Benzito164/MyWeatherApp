@@ -14,12 +14,14 @@ class CustomCollectionViewHeader: UICollectionViewCell {
     var locationLabel : UILabel = {
         let label = UILabel()
         label.text = "Add a Location"
+        label.textColor = .white
         return label
     }()
     
     var temperatureLabel : UILabel = {
         let label = UILabel()
         label.text = ""
+        label.textColor = .white
         return label
     }()
     
@@ -27,7 +29,8 @@ class CustomCollectionViewHeader: UICollectionViewCell {
         let label = UILabel()
         label.text = ""
         label.lineBreakMode = .byWordWrapping
-        label.numberOfLines = 0 
+        label.numberOfLines = 0
+        label.textColor = .white
         return label
     }()
     
@@ -40,7 +43,7 @@ class CustomCollectionViewHeader: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .cyan
+        backgroundColor = .gray
         setUpViews()
     }
     
@@ -51,8 +54,8 @@ class CustomCollectionViewHeader: UICollectionViewCell {
         addSubview(temperatureLabel)
         addSubview(locationLabel)
         addSubview(temperatureDescription)
-        weatherSymbol.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil , right: nil, paddingTop: 0, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 45, height: 45)
-        temperatureDescription.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil , right: nil, paddingTop: 30, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 190, height: 45)
+        weatherSymbol.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil , right: nil, paddingTop: 0, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 85, height: 85)
+        temperatureDescription.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil , right: nil, paddingTop: 60, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 190, height: 45)
         locationLabel.setPositionOnView(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 100, height: 100)
         temperatureLabel.setPositionOnView(top:topAnchor, left: leftAnchor, bottom: locationLabel.bottomAnchor , right: rightAnchor, paddingTop: 0, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 100, height: 100)
     }

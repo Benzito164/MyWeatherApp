@@ -9,6 +9,7 @@
 import UIKit
 import SDWebImage
 import GooglePlaces
+import Foundation
 
 
 var savedLocation = [CustomCollectionViewCell]()
@@ -37,7 +38,7 @@ class CollectionViewController:UICollectionViewController,UICollectionViewDelega
     override var prefersStatusBarHidden: Bool{
         return false
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.addSubview(searchButton)
@@ -62,6 +63,7 @@ class CollectionViewController:UICollectionViewController,UICollectionViewDelega
         searchBar.searchBarStyle = UISearchBar.Style.default
         searchBar.placeholder = "Location"
         searchBar.sizeToFit()
+        searchBar.accessibilityValue = "UISearchBar"
         searchBar.isTranslucent = false
         searchBar.showsCancelButton = true
         searchBar.delegate = self
@@ -70,6 +72,7 @@ class CollectionViewController:UICollectionViewController,UICollectionViewDelega
         searchBar.delegate = self
         tableView.frame = CGRect(x:0, y: 100, width: width, height: height/2)
         tableView.dataSource = self
+        tableView.accessibilityValue = "locationResultTable"
         tableView.delegate = self
         tableView.isOpaque = false
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
@@ -131,14 +134,15 @@ extension CollectionViewController{
             displayWeatherForHeader(header: header, location: (selectedLocation)!)
         }
         if savedLocation.count == 0 {
-            header.locationLabel.text = "Please Add a location"
+            header.locationLabel.text = ""
             header.weatherSymbol.image = UIImage()
-            header.temperatureLabel.text = ""
+            header.temperatureLabel.text = "Please Add a location"
+            header.temperatureDescription.text = ""
         }
         return header
     }
     fileprivate func displayWeatherForHeader(header:CustomCollectionViewHeader,location: CustomCollectionViewCell){
-        header.locationLabel.text = location.locationLabel.text
+        header.locationLabel.text = location.fullLocationName.text
         header.temperatureDescription.text = location.temperatureDescription.text
         header.temperatureLabel.text = location.temperatureLabel.text
         header.weatherSymbol.image = location.weatherSymbol.image
@@ -162,17 +166,29 @@ extension CollectionViewController{
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! CustomCollectionViewCell
         if savedLocation.count == 1{
-            cell.locationLabel.text = savedLocation[indexPath.item].locationLabel.text
-            cell.temperatureLabel.text = savedLocation[indexPath.item].temperatureLabel.text
-            cell.weatherSymbol.image = savedLocation[indexPath.item].weatherSymbol.image
+            displayWeatherForCollectionView(cell: cell, savedLocation: savedLocation[indexPath.item])
         }
         if savedLocation.count > 1{
-            cell.locationLabel.text = savedLocation[indexPath.item].locationLabel.text
-            cell.temperatureLabel.text = savedLocation[indexPath.item].temperatureLabel.text
-            cell.weatherSymbol.image = savedLocation[indexPath.item].weatherSymbol.image
+              displayWeatherForCollectionView(cell: cell, savedLocation: savedLocation[indexPath.item])
         }
         cell.makeCircle(view: cell)
         return cell
+    }
+    
+    fileprivate func displayWeatherForCollectionView(cell:CustomCollectionViewCell, savedLocation:CustomCollectionViewCell){
+        cell.locationLabel.text = savedLocation.locationLabel.text
+        cell.temperatureLabel.text = savedLocation.temperatureLabel.text
+        cell.weatherSymbol.image = savedLocation.weatherSymbol.image
+    }
+    
+    fileprivate func removeCountryCodeFromCityString(city: String)-> String{
+        var firstPart = ""
+        let string = city
+        if let range = string.range(of: ",") {
+            firstPart = String(string[(string.startIndex)..<range.lowerBound])
+            print(firstPart)
+        }
+        return firstPart
     }
 }
 //MARK: - UI Search delegate Methods
@@ -189,6 +205,8 @@ extension CollectionViewController : UISearchBarDelegate,UITableViewDataSource,U
         data.removeAll()
         searchBar.removeFromSuperview()
         tableView.removeFromSuperview()
+        searchBar.isLoading = false
+        searchBar.text = ""
         collectionView.isHidden = false
     }
     
@@ -197,14 +215,13 @@ extension CollectionViewController : UISearchBarDelegate,UITableViewDataSource,U
         placeAutocomplete(place: searchBar.text!)
         tableView.reloadData()
         searchBar.isLoading = false
+        searchBar.text = ""
         view.endEditing(true)
         
     }
     
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-            print(searchText)
-
         searchBar.isLoading = true
         if searchText.count == 0{
             searchActive = false
@@ -225,14 +242,23 @@ extension CollectionViewController : UISearchBarDelegate,UITableViewDataSource,U
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         var cityList = [String]()
-        let city = String(filtered[indexPath.item].dropLast(4))
+        let city = filtered[indexPath.item]
+        let test = city.dropLast(5)
+        print(test)
         cityList.append(city)
          view.endEditing(true)
         let locationManager = LocationManager()
         locationManager.addLocation(location: city)
         let weatherInfo = WeatherDataManager()
-        weatherInfo.getWeatherForLocation(locationsArray:cityList, completionHandler: reloadCollectionView)
-        searchBarCancelButtonClicked(searchBar)
+        weatherInfo.getWeatherForLocation(locationsArray:locationManager.userlocations, completionHandler: reloadCollectionView)
+        searchActive = false;
+        filtered.removeAll()
+        data.removeAll()
+        searchBar.removeFromSuperview()
+        tableView.removeFromSuperview()
+        collectionView.isHidden = false
+        searchBar.isLoading = false
+        searchBar.text = ""
     }
     
     
@@ -241,18 +267,17 @@ extension CollectionViewController : UISearchBarDelegate,UITableViewDataSource,U
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if(searchActive) {
-        return filtered.count
-        }
-        return 1;
+        return filtered.count;
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellID) as! UITableViewCell;
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID) as! UITableViewCell
         cell.backgroundColor = .gray
+        cell.accessibilityValue = "weatherCell"
         if(searchActive){
             cell.textLabel?.text = filtered[indexPath.row]
         }
+
         return cell;
     }
 }
@@ -277,10 +302,10 @@ extension CollectionViewController : UIGestureRecognizerDelegate{
         let indexPath = self.collectionView.indexPathForItem(at: point)
         
         if let index = indexPath {
-            let cell = self.collectionView.cellForItem(at: index) as! CustomCollectionViewCell
-            savedLocation.remove(at: (indexPath?.row)!)
+            let locationToBeDeleted = savedLocation[(indexPath?.row)!].fullLocationName.text
             let locationManager = LocationManager()
-            locationManager.deletelocationFromLocationArray(location: cell.locationLabel.text ?? "")
+            locationManager.deletelocationFromLocationArray(location: locationToBeDeleted ?? "")
+            savedLocation.remove(at: (indexPath?.row)!)
             collectionView.reloadData()
         } else {
             print("Could not find index path")
