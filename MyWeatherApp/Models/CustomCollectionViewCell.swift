@@ -16,18 +16,28 @@ class CustomCollectionViewCell: UICollectionViewCell {
         label.text = "Location"
         label.lineBreakMode = NSLineBreakMode.byWordWrapping
         label.numberOfLines = 0
+        label.accessibilityValue = "locationLabel"
+        return label
+    }()
+    
+    let fullLocationName : UILabel = {
+        let label = UILabel()
+        label.text = "full location"
+        label.accessibilityValue = "fullLocation"
         return label
     }()
     
     let temperatureLabel : UILabel = {
         let label = UILabel()
         label.text = "Add a "
+        label.accessibilityValue = "temperatureLabel"
         return label
     }()
     
     var temperatureDescription : UILabel = {
         let label = UILabel()
         label.text = "Cloudy"
+        label.accessibilityValue = "temperatureDesscription"
         return label
     }()
     
@@ -36,16 +46,18 @@ class CustomCollectionViewCell: UICollectionViewCell {
         image.image = UIImage()
         image.contentMode = .scaleAspectFit
         image.clipsToBounds = true
+        image.accessibilityValue = "weatherSymbol"
         return image
     }()
     
-    init(weatherIcon:UIImageView,weather:String,weatherLocation:String,temperature:String,weatherDescription:String) {
+    init(weatherIcon:UIImageView,weather:String,weatherLocation:String,temperature:String,weatherDescription:String,fullLocationNameText:String) {
         super.init(frame:UIScreen.main.bounds)
       backgroundColor = .brown
         weatherSymbol = weatherIcon
         temperatureLabel.text = temperature+"°C"
         locationLabel.text = weatherLocation
         temperatureDescription.text = weatherDescription
+        fullLocationName.text = fullLocationNameText
         self.setUpViews()
     }
     override init(frame: CGRect) {

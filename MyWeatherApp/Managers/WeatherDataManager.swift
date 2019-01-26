@@ -21,14 +21,13 @@ class WeatherDataManager  {
         locationsArray.forEach { (location) in
             let params : [String: String] = ["q":location, "APPID":WeatherEndPoint.key,"units":"metric"]
             Alamofire.request(WeatherEndPoint.currentLocationWeatherUrl, method: .get, parameters: params).responseJSON { (response) in
-                print(response.result.value!)
                 let weatherData :JSON = JSON(response.result.value!)
                 let weatherIcon = self.getWeatherIcon(icon: weatherData["weather"][0]["icon"].stringValue)
                 let weatherDescription = weatherData["weather"][0]["description"].stringValue
                 let weather = weatherData["weather"][0]["main"].stringValue
                 let locationName = weatherData["name"].stringValue
                 let weatherTemperature = weatherData["main"]["temp"].stringValue
-                self.updateWeatherArrayWithData(weather: weather, weatherDescription: weatherDescription, weatherIcon: weatherIcon, locationName: locationName, temperature: weatherTemperature)
+                self.updateWeatherArrayWithData(weather: weather, weatherDescription: weatherDescription, weatherIcon: weatherIcon, locationName: locationName, temperature: weatherTemperature, fullLocationName: location)
                         DispatchQueue.main.async {
                             completionHandler()
                         }
@@ -37,11 +36,11 @@ class WeatherDataManager  {
         }
     }
     
-    func updateWeatherArrayWithData(weather: String, weatherDescription: String, weatherIcon:UIImageView,locationName: String,temperature:String){
-        let weatherInfo = CustomCollectionViewCell(weatherIcon: weatherIcon, weather: weather, weatherLocation: locationName, temperature: temperature,weatherDescription:weatherDescription)
+    func updateWeatherArrayWithData(weather: String, weatherDescription: String, weatherIcon:UIImageView,locationName: String,temperature:String,fullLocationName:String){
+        let weatherInfo = CustomCollectionViewCell(weatherIcon: weatherIcon, weather: weather, weatherLocation: locationName, temperature: temperature,weatherDescription:weatherDescription,fullLocationNameText:fullLocationName)
         if savedLocation.count > 0 {
             for locations in savedLocation {
-                if locationName == locations.locationLabel.text{
+                if fullLocationName == locations.fullLocationName.text{
                     return
                 }
             }
