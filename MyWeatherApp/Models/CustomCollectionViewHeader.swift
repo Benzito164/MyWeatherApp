@@ -15,6 +15,7 @@ class CustomCollectionViewHeader: UICollectionViewCell {
         let label = UILabel()
         label.text = "Add a Location"
         label.textColor = .white
+        label.accessibilityIdentifier = "locationLabelIdentifier"
         return label
     }()
     
@@ -54,10 +55,10 @@ class CustomCollectionViewHeader: UICollectionViewCell {
         addSubview(temperatureLabel)
         addSubview(locationLabel)
         addSubview(temperatureDescription)
-        weatherSymbol.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil , right: nil, paddingTop: 0, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 85, height: 85)
-        temperatureDescription.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil , right: nil, paddingTop: 60, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 190, height: 45)
-        locationLabel.setPositionOnView(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 100, height: 100)
-        temperatureLabel.setPositionOnView(top:topAnchor, left: leftAnchor, bottom: locationLabel.bottomAnchor , right: rightAnchor, paddingTop: 0, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 100, height: 100)
+        weatherSymbol.setPositionOnView(top: nil, left: nil, bottom: temperatureDescription.topAnchor , right: nil, paddingTop: 0, leftPadding: 120, bottomPadding: 0, rightPadding: 0, width: 85, height: 65)
+        temperatureDescription.setPositionOnView(top: nil, left: nil, bottom: temperatureLabel.topAnchor, right: nil, paddingTop: 0, leftPadding: 120, bottomPadding: -20, rightPadding: 0, width: 190, height: 45)
+        temperatureLabel.setPositionOnView(top:nil, left: nil, bottom: locationLabel.topAnchor , right: nil, paddingTop: 0, leftPadding: 120, bottomPadding: -20, rightPadding: 0, width: 190, height: 50)
+        locationLabel.setPositionOnView(top: nil, left: nil, bottom: bottomAnchor, right:nil, paddingTop: 0, leftPadding: 120, bottomPadding: -30, rightPadding: 0, width: 290, height: 50)
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
