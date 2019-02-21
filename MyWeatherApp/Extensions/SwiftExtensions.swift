@@ -33,8 +33,8 @@ extension UIView {
         if height != 0 {
             heightAnchor.constraint(equalToConstant: height).isActive = true
         }
-    
     }
+
     func fadeIn() {
         // Move our fade out code from earlier
         UIView.animate(withDuration: 5.0, delay: 5.0, options: UIView.AnimationOptions.curveEaseIn, animations: {
