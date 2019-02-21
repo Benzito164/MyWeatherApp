@@ -21,17 +21,27 @@ class CollectionViewController:UICollectionViewController,UICollectionViewDelega
     var selectedLocation: CustomCollectionViewCell?
     lazy var searchBar:UISearchBar = UISearchBar()
     var cellID =  "cell"
+    let tableView: UITableView = UITableView()
+    var searchActive : Bool = false
+    let locationManager = LocationManager()
+    let weatherInfo = WeatherDataManager()
     
     let searchButton : UIButton = {
-       let button = UIButton(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
+       let button = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        button.accessibilityIdentifier = "locationSearchButton"
         button.setImage(UIImage(named: "search"), for: .normal)
         button.addTarget(self, action: #selector(displaySearchScreen), for: .touchUpInside)
+        button.backgroundColor = .red
         return button
     }()
     
-    let tableView: UITableView = UITableView()
-    
-    var searchActive : Bool = false
+    let restartButton : UIButton = {
+       let button = UIButton(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        button.accessibilityIdentifier = "restartButton"
+        button.setImage(UIImage(named: "SettingsIcon"), for: .normal)
+        button.addTarget(self, action: #selector(restoreAppToDefault), for: .touchUpInside)
+        return button
+    }()
     var data = ["San Francisco","New York","San Jose","Chicago","Los Angeles","Austin","Seattle"]
     var filtered:[String] = []
     
@@ -41,58 +51,77 @@ class CollectionViewController:UICollectionViewController,UICollectionViewDelega
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.addSubview(searchButton)
-        collectionView.addSubview(searchBar)
-        searchButton.setPositionOnView(top: collectionView.topAnchor, left: collectionView.leftAnchor, bottom: collectionView.bottomAnchor, right: collectionView.rightAnchor, paddingTop: 600, leftPadding: 150, bottomPadding: 20, rightPadding: 20, width: 60, height: 60)
-        searchButton.makeCircle(view: searchButton)
-        searchButton.backgroundColor = .clear
-        let locationManager = LocationManager()
-        let weatherInfo = WeatherDataManager()
+        setUpCollectionViewAndButtons()
+        print(locationManager.userlocations.count)
         weatherInfo.getWeatherForLocation(locationsArray:locationManager.userlocations, completionHandler: reloadCollectionView)
+        reloadCollectionView()
+        setUpDeleteLocationGestureRecogniser()
+    }
+    
+    func setUpCollectionViewAndButtons(){
+        [searchBar,searchButton,restartButton].forEach {view.addSubview($0)}
+       let leftPaddingValue =  (UIScreen.main.bounds.width/2) - 25
+        searchButton.setPositionOnView(top: nil, left: collectionView.safeAreaLayoutGuide.leftAnchor, bottom: collectionView.safeAreaLayoutGuide.bottomAnchor, right: nil, paddingTop: 0, leftPadding: leftPaddingValue, bottomPadding: -60, rightPadding: 0, width: 50, height: 50)
+        restartButton.setPositionOnView(top:view.safeAreaLayoutGuide.topAnchor, left: nil, bottom: nil, right:collectionView.safeAreaLayoutGuide.rightAnchor, paddingTop: 20, leftPadding: 0, bottomPadding: 0, rightPadding: -10, width: 30, height: 30)
+        searchButton.makeCircle()
+        searchButton.backgroundColor = .clear
         collectionView.backgroundColor  = .gray
         collectionView.register(CustomCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.register(CustomCollectionViewHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
-        reloadCollectionView()
-        setUpGestureRecogniser()
+    }
+    @objc func restoreAppToDefault (){
+        let alert = UIAlertController(title: "Reset App?", message:"All your saved locations will be deleted", preferredStyle: .actionSheet)
+        let resetAction = UIAlertAction(title: "Reset", style: .destructive) { (dismiss) in
+            savedLocation.removeAll()
+            self.locationManager.removeAllLocations()
+            self.collectionView.reloadData()
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (alertInfo) in
+
+        }
+        alert.addAction(cancelAction)
+        alert.addAction(resetAction)
+        present(alert, animated: true, completion: nil)
 
     }
     
     @objc func displaySearchScreen(){
-        let width = UIScreen.main.bounds.width
-        let height = UIScreen.main.bounds.height
         searchBar.searchBarStyle = UISearchBar.Style.default
         searchBar.placeholder = "Location"
         searchBar.sizeToFit()
         searchBar.accessibilityValue = "UISearchBar"
+        searchBar.accessibilityIdentifier = "UISearchBar"
         searchBar.isTranslucent = false
         searchBar.showsCancelButton = true
         searchBar.delegate = self
         searchBar.searchBarStyle = .minimal
         searchBar.enablesReturnKeyAutomatically = true
         searchBar.delegate = self
-        tableView.frame = CGRect(x:0, y: 100, width: width, height: height/2)
+        searchBar.backgroundColor = .gray
+        tableView.backgroundColor = .gray
+        tableView.frame = CGRect(x:0, y: 100, width: 0, height: 0)
         tableView.dataSource = self
         tableView.accessibilityValue = "locationResultTable"
         tableView.delegate = self
         tableView.isOpaque = false
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
-        tableView.backgroundColor = .gray
         tableView.allowsSelection = true
         collectionView.isHidden = true
         view.addSubview(tableView)
         collectionView.willRemoveSubview(searchBar)
         view.addSubview(searchBar)
-        tableView.setPositionOnView(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 90, leftPadding: 5, bottomPadding: -290, rightPadding: 5, width: 20, height: 100)
-        searchBar.setPositionOnView(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 37, leftPadding: 10, bottomPadding: 200, rightPadding: -15, width: 20, height: 50)
+        searchBar.setPositionOnView(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 7, leftPadding: 10, bottomPadding: 0, rightPadding: -15, width: 0, height: 45)
+        tableView.setPositionOnView(top: searchBar.bottomAnchor, left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingTop: 10, leftPadding: 5, bottomPadding: -20, rightPadding: -15, width: 0, height: 0)
         view.backgroundColor = .gray
         tableView.reloadData()
+        shouldHideButtonsOnCollectionViewScreen(hide: true)
     }
     
         func placeAutocomplete(place: String) {
-        let filter = GMSAutocompleteFilter()
-        filter.type = .city
-        let placesClient = GMSPlacesClient()
-        placesClient.autocompleteQuery(place, bounds: nil, filter: filter, callback: {(results, error) -> Void in
+             let filter = GMSAutocompleteFilter()
+             filter.type = .city
+             let placesClient = GMSPlacesClient()
+            placesClient.autocompleteQuery(place, bounds: nil, filter: filter, callback: {(results, error) -> Void in
             if let error = error {
                 print("Autocomplete error \(error)")
                 return
@@ -138,15 +167,18 @@ extension CollectionViewController{
             header.weatherSymbol.image = UIImage()
             header.temperatureLabel.text = "Please Add a location"
             header.temperatureDescription.text = ""
+            
         }
         return header
     }
+    
     fileprivate func displayWeatherForHeader(header:CustomCollectionViewHeader,location: CustomCollectionViewCell){
         header.locationLabel.text = location.fullLocationName.text
         header.temperatureDescription.text = location.temperatureDescription.text
-        header.temperatureLabel.text = location.temperatureLabel.text
+        header.temperatureLabel.text = (location.temperatureLabel.text?.components(separatedBy: ".").first)!+"°C"
         header.weatherSymbol.image = location.weatherSymbol.image
     }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
@@ -171,24 +203,15 @@ extension CollectionViewController{
         if savedLocation.count > 1{
               displayWeatherForCollectionView(cell: cell, savedLocation: savedLocation[indexPath.item])
         }
-        cell.makeCircle(view: cell)
+        cell.makeCircle()
         return cell
     }
     
     fileprivate func displayWeatherForCollectionView(cell:CustomCollectionViewCell, savedLocation:CustomCollectionViewCell){
         cell.locationLabel.text = savedLocation.locationLabel.text
-        cell.temperatureLabel.text = savedLocation.temperatureLabel.text
+        cell.locationLabel.accessibilityIdentifier = "weatherCellid"
+        cell.temperatureLabel.text = (savedLocation.temperatureLabel.text?.components(separatedBy: ".").first)!+"°C"
         cell.weatherSymbol.image = savedLocation.weatherSymbol.image
-    }
-    
-    fileprivate func removeCountryCodeFromCityString(city: String)-> String{
-        var firstPart = ""
-        let string = city
-        if let range = string.range(of: ",") {
-            firstPart = String(string[(string.startIndex)..<range.lowerBound])
-            print(firstPart)
-        }
-        return firstPart
     }
 }
 //MARK: - UI Search delegate Methods
@@ -208,6 +231,13 @@ extension CollectionViewController : UISearchBarDelegate,UITableViewDataSource,U
         searchBar.isLoading = false
         searchBar.text = ""
         collectionView.isHidden = false
+        shouldHideButtonsOnCollectionViewScreen(hide: false)
+        
+    }
+    
+    func shouldHideButtonsOnCollectionViewScreen(hide:Bool){
+       searchButton.isHidden =  hide
+       restartButton.isHidden = hide
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -254,13 +284,41 @@ extension CollectionViewController : UISearchBarDelegate,UITableViewDataSource,U
         searchActive = false;
         filtered.removeAll()
         data.removeAll()
-        searchBar.removeFromSuperview()
-        tableView.removeFromSuperview()
-        collectionView.isHidden = false
-        searchBar.isLoading = false
-        searchBar.text = ""
+      searchBar.removeFromSuperview()
+      tableView.removeFromSuperview()
+      collectionView.isHidden = false
+      searchBar.isLoading = false
+      searchBar.text = ""
+      shouldHideButtonsOnCollectionViewScreen(hide: false)
     }
-    
+    //"Weather Type: Rainy Clouds \nTemp: 79°C"
+//     func displayweatherInfoInActionSheet(weatherInformation:String,weatherImage:UIImage){
+//        let alert = UIAlertController(title: "Weaather Info", message:weatherInformation, preferredStyle: .actionSheet)
+//        let alertDismissAction = UIAlertAction(title: "Dismiss", style: .destructive) { (dismiss) in
+//            self.searchActive = false;
+//            self.filtered.removeAll()
+//            self.data.removeAll()
+//            self.searchBar.removeFromSuperview()
+//            self.tableView.removeFromSuperview()
+//            self.searchBar.isLoading = false
+//            self.searchBar.text = ""
+//            self.collectionView.isHidden = false
+//        }
+//        let alertAddAction = UIAlertAction(title: "Add Location", style: .default) { (alertInfo) in
+//            self.searchBar.removeFromSuperview()
+//            self.tableView.removeFromSuperview()
+//            self.collectionView.isHidden = false
+//            self.searchBar.isLoading = false
+//            self.searchBar.text = ""
+//        }
+//        alert.addAction(alertAddAction)
+//        alert.addAction(alertDismissAction)
+//        let imgViewTitle = UIImageView(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
+//        imgViewTitle.image = UIImage(named:"Sun")
+//        alert.view.addSubview(imgViewTitle)
+//        present(alert, animated: true, completion: nil)
+//
+//    }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -271,13 +329,16 @@ extension CollectionViewController : UISearchBarDelegate,UITableViewDataSource,U
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellID) as! UITableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID)!
         cell.backgroundColor = .gray
-        cell.accessibilityValue = "weatherCell"
+        cell.accessibilityIdentifier = "weatherCell"
         if(searchActive){
             cell.textLabel?.text = filtered[indexPath.row]
+            cell.accessibilityIdentifier = "weatherCell"
+            cell.textLabel?.accessibilityIdentifier = "textLabelIndentifier"
+            cell.accessibilityValue = "accesibityValue"
+            cell.textLabel?.accessibilityValue = "textLabelacessValue"
         }
-
         return cell;
     }
 }
@@ -285,7 +346,7 @@ extension CollectionViewController : UISearchBarDelegate,UITableViewDataSource,U
 //MARK: - UI Gesture Recogniser Set up and Method.
 extension CollectionViewController : UIGestureRecognizerDelegate{
     
-    public func setUpGestureRecogniser(){
+    public func setUpDeleteLocationGestureRecogniser(){
         let lpgr = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gestureReconizer:)))
         lpgr.minimumPressDuration = 0.5
         lpgr.delaysTouchesBegan = true
@@ -301,7 +362,7 @@ extension CollectionViewController : UIGestureRecognizerDelegate{
         let point = gestureReconizer.location(in: self.collectionView)
         let indexPath = self.collectionView.indexPathForItem(at: point)
         
-        if let index = indexPath {
+        if let _ = indexPath {
             let locationToBeDeleted = savedLocation[(indexPath?.row)!].fullLocationName.text
             let locationManager = LocationManager()
             locationManager.deletelocationFromLocationArray(location: locationToBeDeleted ?? "")
