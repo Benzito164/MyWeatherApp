@@ -45,7 +45,7 @@ class LocationManager {
 
     }
     
-    func emptyLocationArray()  {
+    func removeAllLocations()  {
         _locations.removeAll()
     }
     
