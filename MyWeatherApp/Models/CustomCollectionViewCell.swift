@@ -54,7 +54,7 @@ class CustomCollectionViewCell: UICollectionViewCell {
         super.init(frame:UIScreen.main.bounds)
       backgroundColor = .brown
         weatherSymbol = weatherIcon
-        temperatureLabel.text = temperature+"°C"
+        temperatureLabel.text = temperature
         locationLabel.text = weatherLocation
         temperatureDescription.text = weatherDescription
         fullLocationName.text = fullLocationNameText
@@ -70,9 +70,12 @@ class CustomCollectionViewCell: UICollectionViewCell {
       addSubview(temperatureLabel)
       addSubview(locationLabel)
       addSubview(weatherSymbol)
-        locationLabel.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 28, leftPadding: 5, bottomPadding: 0, rightPadding: 0, width: 0, height: 0)
-        temperatureLabel.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 26, leftPadding: 4, bottomPadding: 0, rightPadding: 0, width: 10, height: 15)
-        weatherSymbol.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil , right: nil, paddingTop: 0, leftPadding: 13, bottomPadding: 0, rightPadding: 0, width: 30, height: 30)
+       weatherSymbol.setPositionOnView(top: topAnchor, left: leftAnchor, bottom: nil , right: nil, paddingTop: 0, leftPadding: 26, bottomPadding: 0, rightPadding: 0, width: 30, height: 30)
+       temperatureLabel.setPositionOnView(top: weatherSymbol.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 1, leftPadding: 14, bottomPadding: 0, rightPadding: 0, width: 59, height: 15)
+       locationLabel.setPositionOnView(top: temperatureLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 1, leftPadding:1, bottomPadding: 0, rightPadding: 0, width:0, height: 0)
+      
+      
+
         
         
     }
