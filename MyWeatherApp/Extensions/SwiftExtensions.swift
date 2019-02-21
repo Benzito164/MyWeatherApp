@@ -48,10 +48,10 @@ extension UIView {
         }, completion: nil)
     }
     
-    func makeCircle(view: UIView){
-      view.layer.cornerRadius = self.frame.size.height / 2
-      view.layer.masksToBounds = true
-      view.clipsToBounds = true
+    func makeCircle(){
+      self.layer.cornerRadius = self.frame.size.height / 2
+      self.layer.masksToBounds = true
+      self.clipsToBounds = true
 
     }
 }
