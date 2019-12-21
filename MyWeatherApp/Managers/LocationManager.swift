@@ -46,7 +46,7 @@ class LocationManager {
     }
     
     func emptyLocationArray()  {
-        _locations.removeAll()
+      //  _locations.removeAll()
     }
     
     func doesLocationExistInArray(location : String) -> Bool {
