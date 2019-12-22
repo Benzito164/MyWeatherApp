@@ -28,7 +28,7 @@ class LocationManager {
     
     //MARK: - Methods
     func addLocation(location: String){
-      //  print(location)
+       print(location)
         print(_locations)
         if !doesLocationExistInArray(location: location){
              _locations.append(location)
